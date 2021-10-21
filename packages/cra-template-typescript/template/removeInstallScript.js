@@ -50,7 +50,7 @@ const removeTemporaryScript = () => {
     const newScripts = Object.fromEntries(Object.entries(packageJson.scripts).filter(([key]) =>
         !SCRIPTS_TO_REMOVE.includes(key)));
 
-    savePackageJson({...packageJson, ...{script: newScripts}});
+    savePackageJson({...packageJson, ...{scripts: newScripts}});
 };
 
 moveReactAsPeerDependencies();
