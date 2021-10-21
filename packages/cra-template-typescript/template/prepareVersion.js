@@ -24,7 +24,7 @@ const replaceFrontPackagePaths = (replace) => {
         .toString('utf8')
         .replace(new RegExp('~\\$FRONT_PACKAGES_PATH~', 'g'), replace)
 
-    savePackageJson(replacedData);
+    fs.writeFileSync('./package.json', replacedData);
 };
 
 const addPeerDependencies = () => {
