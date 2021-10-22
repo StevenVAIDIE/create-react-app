@@ -53,5 +53,12 @@ const removeTemporaryScript = () => {
     savePackageJson({...packageJson, ...{scripts: newScripts}});
 };
 
+const removeYarnLock = () => {
+    if (fs.existsSync('./yarn.lock')) {
+        fs.unlinkSync('./yarn.lock');
+    }
+}
+
 moveReactAsPeerDependencies();
 removeTemporaryScript();
+removeYarnLock();
