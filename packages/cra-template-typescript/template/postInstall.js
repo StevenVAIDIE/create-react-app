@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const path = require('path');
+
 const SCRIPTS_TO_REMOVE = [
     'build',
     'eject',
@@ -8,8 +10,7 @@ const SCRIPTS_TO_REMOVE = [
     'preinstall',
     'start',
     'test',
-] ;
-
+];
 
 const DEPENDENCIES_TO_MOVE_INTO_PEER_DEPENDENCIES = [
     'react',
@@ -45,6 +46,18 @@ const moveReactAsPeerDependencies = () => {
     });
 };
 
+const replaceFrontPackagePaths = () => {
+    const absoluteTemplatePath = path.dirname(path.dirname(path.dirname(require.resolve(`akeneo-design-system`))));
+    const relativeTemplatePath = path.relative(__dirname, absoluteTemplatePath);
+
+    const rawPackageJson = fs.readFileSync('./package.json');
+    const replacedData = rawPackageJson
+        .toString('utf8')
+        .replace(/\$FRONT_PACKAGES_PATH/g, relativeTemplatePath)
+
+    fs.writeFileSync('./package.json', replacedData);
+};
+
 const removeTemporaryScript = () => {
     const packageJson = readPackageJson();
     const newScripts = Object.fromEntries(Object.entries(packageJson.scripts).filter(([key]) =>
@@ -59,6 +72,20 @@ const removeYarnLock = () => {
     }
 }
 
+const replaceApplicationPath = () => {
+    const absoluteApplicationPath = process.env.INIT_CWD;
+    const relativeApplicationPath = path.relative(__dirname, absoluteApplicationPath);
+
+    const rawPackageJson = fs.readFileSync('./package.json');
+    const replacedData = rawPackageJson
+        .toString('utf8')
+        .replace(/\$APPLICATION_PATH/g, relativeApplicationPath)
+
+    fs.writeFileSync('./package.json', replacedData);
+};
+
+replaceFrontPackagePaths();
+replaceApplicationPath();
 moveReactAsPeerDependencies();
 removeTemporaryScript();
 removeYarnLock();
